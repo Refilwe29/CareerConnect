@@ -28,7 +28,7 @@ public class Internship {
     //Getter
 
     public String getInternshipId() {
-        return intershipId;
+        return internshipId;
     }
 
     public String getTitle() {
