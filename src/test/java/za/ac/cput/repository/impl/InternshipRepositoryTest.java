@@ -36,7 +36,7 @@ class InternshipRepositoryTest {
     @Test
     void read() {
         Internship created = repository.create(internship);
-        Internship read = repository.read(created.getInternship());
+        Internship read = repository.read(created.getInternshipId());
         assertNotNull(read);
     }
 
