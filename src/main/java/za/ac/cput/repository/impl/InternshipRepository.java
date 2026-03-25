@@ -39,7 +39,7 @@ public class InternshipRepository implements IInternshipRepository {
         return internship;
     }
 @Override
-    public Internship read(String InternshipId) {
+    public Internship read(String internshipId) {
         return internshipMap.get(internshipId);
     }
 
