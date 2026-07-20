@@ -15,6 +15,12 @@ src/main/resources/application-secret.properties
 *.iml
 *.ipr
 
+### Frontend ###
+frontend/node_modules/
+frontend/dist/
+frontend/.idea
+frontend/.vscode/*
+
 ### Eclipse ###
 .apt_generated
 .classpath
