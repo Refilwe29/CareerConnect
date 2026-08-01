@@ -1,18 +1,19 @@
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import StudentPage from './pages/StudentPage';
 
-function App() {
-  return (
-      <div className="flex items-center justify-center min-h-screen bg-slate-900 text-white">
-        <div className="text-center p-8 bg-slate-800 rounded-2xl shadow-xl border border-slate-700">
-          <h1 className="text-4xl font-extrabold text-blue-400 mb-4 animate-bounce">
-            CareerConnect 🎓💼
-          </h1>
-          <p className="text-slate-300 text-lg">
-            Tailwind CSS v4 is successfully configured with Vite!
-          </p>
-        </div>
-      </div>
-  );
+export default function App() {
+    return (
+        <Router>
+            <div className="min-h-screen bg-slate-900 text-slate-100 font-sans">
+                <Navbar />
+                <main>
+                    <Routes>
+                        <Route path="/" element={<StudentPage />} />
+                    </Routes>
+                </main>
+            </div>
+        </Router>
+    );
 }
-
-export default App;
