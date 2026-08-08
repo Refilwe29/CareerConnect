@@ -1,92 +1,22 @@
-
 package za.ac.cput.service;
 
 /*
-InternshipService.java
-Internship Service
+IInternshipService.java
+Internship Service Interface
 Author: Refilwe Mabena (231013051)
-Date: 6 August 2026
+Date: 8 August 2026
 */
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import za.ac.cput.domain.Internship;
-import za.ac.cput.repository.InternshipRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Service
-public class InternshipService implements IInternshipService {
+public interface IInternshipService extends IService<Internship, String> {
 
-    private final InternshipRepository internshipRepository;
+    List<Internship> getInternshipsByLocation(String location);
 
-    @Autowired
-    public InternshipService(InternshipRepository internshipRepository) {
-        this.internshipRepository = internshipRepository;
-    }
+    List<Internship> getInternshipsByTitle(String title);
 
-    @Override
-    public Internship create(Internship internship) {
-
-        
-        // Internship deadline must be in the future
-        if (!internship.getDeadline().isAfter(LocalDateTime.now())) {
-            System.out.println("Posting Failed: Deadline must be in the future.");
-            return null;
-        }
-
-        if (internshipRepository.existsById(internship.getInternshipId())) {
-            System.out.println("Posting Failed: Internship ID already exists.");
-            return null;
-        }
-
-        return internshipRepository.save(internship);
-    }
-
-    @Override
-    public Internship read(String id) {
-        return internshipRepository.findById(id).orElse(null);
-    }
-
-    @Override
-    public Internship update(Internship internship) {
-
-        if (internshipRepository.existsById(internship.getInternshipId())) {
-            return internshipRepository.save(internship);
-        }
-
-        return null;
-    }
-
-    @Override
-    public boolean delete(String id) {
-
-        if (internshipRepository.existsById(id)) {
-            internshipRepository.deleteById(id);
-            return true;
-        }
-
-        return false;
-    }
-
-    @Override
-    public List<Internship> getAll() {
-        return internshipRepository.findAll();
-    }
-
-    @Override
-    public List<Internship> getInternshipsByLocation(String location) {
-        return internshipRepository.findByLocation(location);
-    }
-
-    @Override
-    public List<Internship> getInternshipsByTitle(String title) {
-        return internshipRepository.findByTitleContainingIgnoreCase(title);
-    }
-
-    @Override
-    public List<Internship> getUpcomingInternships(LocalDateTime deadline) {
-        return internshipRepository.findByDeadlineAfter(deadline);
-    }
+    List<Internship> getUpcomingInternships(LocalDateTime deadline);
 }
