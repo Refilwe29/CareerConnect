@@ -16,7 +16,7 @@ import java.util.List;
 import java.time.LocalDateTime;
 
 @Repository
-  public interface InternshipRepository extends JpaRepository<Internship, String> {
+public interface InternshipRepository extends JpaRepository<Internship, String> {
 
 List<Internship> findByLocation(String location);
     
