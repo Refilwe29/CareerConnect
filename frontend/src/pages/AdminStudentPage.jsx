@@ -22,7 +22,7 @@ import {
     X
 } from 'lucide-react';
 
-export default function StudentPage() {
+export default function AdminStudentPage() {
     const [formData, setFormData] = useState({
         studentNumber: '',
         name: '',
