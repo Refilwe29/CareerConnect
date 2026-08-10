@@ -16,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/internship")
+@CrossOrigin(origins = "http://localhost:5173")
 public class InternshipController {
 
     private final IInternshipService internshipService;
