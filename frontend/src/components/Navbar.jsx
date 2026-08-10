@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import {
     GraduationCap,
     LayoutDashboard,
     Briefcase,
     FileText,
     Building2,
+    Users,
+    User,
     Search,
     Bell,
     Menu,
@@ -17,19 +20,11 @@ import {
 
 export default function Navbar() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [user, setUser] = useState(null);
+    const { user, logout } = useAuth();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const storedUser = localStorage.getItem('currentUser');
-        if (storedUser) {
-            setUser(JSON.parse(storedUser));
-        }
-    }, []);
-
     const handleLogout = () => {
-        localStorage.removeItem('currentUser');
-        setUser(null);
+        logout();
         navigate('/');
     };
 
@@ -44,6 +39,50 @@ export default function Navbar() {
                 ? 'text-brand-accent bg-brand-accent/10 border border-brand-accent/20 font-semibold'
                 : 'text-text-muted hover:text-text-main hover:bg-card-bg'
         }`;
+
+    const getNavLinks = () => {
+        // GUEST LINKS (NOT LOGGED IN)
+        if (!user) {
+            return [
+                { to: '/', label: 'Home', icon: LayoutDashboard, end: true },
+                { to: '/internships', label: 'Internships', icon: Briefcase },
+                { to: '/companies', label: 'Companies', icon: Building2 },
+            ];
+        }
+
+        // STUDENT LINKS
+        if (user.role === 'STUDENT') {
+            return [
+                { to: '/', label: 'Home', icon: LayoutDashboard, end: true },
+                { to: '/internships', label: 'Internships', icon: Briefcase },
+                { to: '/applications', label: 'My Applications', icon: FileText },
+                { to: '/profile', label: 'My Profile', icon: User },
+            ];
+        }
+
+        // COMPANY / EMPLOYER LINKS
+        if (user.role === 'COMPANY') {
+            return [
+                { to: '/', label: 'Home', icon: LayoutDashboard, end: true },
+                { to: '/internships', label: 'Manage Postings', icon: Briefcase },
+                { to: '/applications', label: 'Applicants', icon: Users },
+            ];
+        }
+
+        // ADMIN LINKS
+        if (user.role === 'ADMIN') {
+            return [
+                { to: '/', label: 'Home', icon: LayoutDashboard, end: true },
+                { to: '/admin/students', label: 'Students', icon: Users },
+                { to: '/companies', label: 'Companies', icon: Building2 },
+                { to: '/internships', label: 'Internships', icon: Briefcase },
+            ];
+        }
+
+        return [];
+    };
+
+    const navLinks = getNavLinks();
 
     return (
         <header className="sticky top-0 z-50 w-full bg-app-bg/85 backdrop-blur-md border-b border-ui-border">
@@ -69,27 +108,22 @@ export default function Navbar() {
                         </Link>
                     </div>
 
-                    {/* Navigation Links */}
+                    {/* Dynamic Navigation Links */}
                     <div className="hidden md:flex items-center space-x-1">
-                        <NavLink to="/" className={navLinkClass} end>
-                            <LayoutDashboard className="w-4 h-4" />
-                            <span>Dashboard</span>
-                        </NavLink>
-
-                        <NavLink to="/internships" className={navLinkClass}>
-                            <Briefcase className="w-4 h-4" />
-                            <span>Internships</span>
-                        </NavLink>
-
-                        <NavLink to="/applications" className={navLinkClass}>
-                            <FileText className="w-4 h-4" />
-                            <span>Applications</span>
-                        </NavLink>
-
-                        <NavLink to="/companies" className={navLinkClass}>
-                            <Building2 className="w-4 h-4" />
-                            <span>Companies</span>
-                        </NavLink>
+                        {navLinks.map((link) => {
+                            const Icon = link.icon;
+                            return (
+                                <NavLink
+                                    key={link.to}
+                                    to={link.to}
+                                    className={navLinkClass}
+                                    end={link.end}
+                                >
+                                    <Icon className="w-4 h-4" />
+                                    <span>{link.label}</span>
+                                </NavLink>
+                            );
+                        })}
                     </div>
 
                     {/* Actions & User Profile */}
@@ -107,18 +141,15 @@ export default function Navbar() {
                         {/* IF USER IS LOGGED IN */}
                         {user ? (
                             <div className="flex items-center space-x-3 pl-2 border-l border-ui-border">
-                                {/* Notification Bell */}
                                 <button className="relative p-2 text-text-muted hover:text-text-main bg-card-bg/50 hover:bg-card-bg border border-ui-border rounded-xl transition-colors">
                                     <Bell className="w-4 h-4" />
                                     <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-brand-mint rounded-full animate-pulse" />
                                 </button>
 
-                                {/* User Initials Avatar */}
                                 <div className="w-9 h-9 rounded-xl bg-linear-to-tr from-brand-primary to-brand-accent flex items-center justify-center text-white font-bold text-sm shadow-md">
                                     {getInitials(user.name)}
                                 </div>
 
-                                {/* User Details */}
                                 <div className="flex flex-col">
                                     <span className="text-xs font-bold text-text-main leading-tight">
                                         {user.name}
@@ -128,7 +159,6 @@ export default function Navbar() {
                                     </span>
                                 </div>
 
-                                {/* Logout Button */}
                                 <button
                                     onClick={handleLogout}
                                     title="Log Out"
@@ -138,7 +168,7 @@ export default function Navbar() {
                                 </button>
                             </div>
                         ) : (
-                            /* IF NO USER IS LOGGED IN  */
+                            /* IF NO USER IS LOGGED IN (GUEST STATE) */
                             <div className="flex items-center space-x-3 pl-2 border-l border-ui-border">
                                 <Link
                                     to="/login"
@@ -175,22 +205,20 @@ export default function Navbar() {
                 {/* MOBILE MENU OVERLAY */}
                 {mobileMenuOpen && (
                     <div className="md:hidden py-4 border-t border-ui-border space-y-2 animate-fadeIn">
-                        <NavLink to="/" className={navLinkClass} onClick={() => setMobileMenuOpen(false)}>
-                            <LayoutDashboard className="w-4 h-4" />
-                            <span>Dashboard</span>
-                        </NavLink>
-                        <NavLink to="/internships" className={navLinkClass} onClick={() => setMobileMenuOpen(false)}>
-                            <Briefcase className="w-4 h-4" />
-                            <span>Internships</span>
-                        </NavLink>
-                        <NavLink to="/applications" className={navLinkClass} onClick={() => setMobileMenuOpen(false)}>
-                            <FileText className="w-4 h-4" />
-                            <span>Applications</span>
-                        </NavLink>
-                        <NavLink to="/companies" className={navLinkClass} onClick={() => setMobileMenuOpen(false)}>
-                            <Building2 className="w-4 h-4" />
-                            <span>Companies</span>
-                        </NavLink>
+                        {navLinks.map((link) => {
+                            const Icon = link.icon;
+                            return (
+                                <NavLink
+                                    key={link.to}
+                                    to={link.to}
+                                    className={navLinkClass}
+                                    onClick={() => setMobileMenuOpen(false)}
+                                >
+                                    <Icon className="w-4 h-4" />
+                                    <span>{link.label}</span>
+                                </NavLink>
+                            );
+                        })}
 
                         {/* Mobile Auth / Profile Section */}
                         <div className="pt-4 mt-4 border-t border-ui-border px-3">

@@ -9,9 +9,11 @@ import {
     Loader2,
 } from 'lucide-react';
 import { getStudentByEmail } from '../services/studentService';
+import {useAuth} from "../context/AuthContext.jsx";
 
 export default function LoginPage() {
     const navigate = useNavigate();
+    const { login } = useAuth();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const location = useLocation();
@@ -41,9 +43,9 @@ export default function LoginPage() {
                     email: student.email,
                     role: 'STUDENT'
                 };
-                localStorage.setItem('currentUser', JSON.stringify(userSession));
+                login(userSession);
 
-                window.location.href = from;
+                navigate(from, { replace: true });
             } else {
                 setError('Invalid email or password. Please try again.');
             }
@@ -90,8 +92,9 @@ export default function LoginPage() {
                                 type="email"
                                 name="email"
                                 value={credentials.email}
+                                autoComplete="off"
                                 onChange={handleChange}
-                                placeholder="ebenezer@cput.ac.za"
+                                placeholder="240456890@mycput.ac.za"
                                 required
                                 className="w-full bg-app-bg border border-ui-border focus:border-brand-accent rounded-xl pl-10 pr-4 py-2.5 text-xs text-text-main placeholder-text-muted/60 focus:outline-none focus:ring-1 focus:ring-brand-accent transition-all"
                             />
@@ -126,7 +129,7 @@ export default function LoginPage() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full bg-brand-primary hover:bg-brand-primary-hover text-white font-semibold py-3 px-4 rounded-xl text-xs shadow-lg shadow-brand-primary/20 transition-all hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center space-x-2 mt-2 disabled:opacity-50"
+                        className="w-full bg-brand-primary hover:bg-brand-primary-hover text-white font-semibold py-3 px-4 rounded-xl text-xs shadow-lg shadow-brand-primary/20 transition-all hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center space-x-2 mt-2 disabled:opacity-50 cursor-pointer"
                     >
                         {loading ? (
                             <>
