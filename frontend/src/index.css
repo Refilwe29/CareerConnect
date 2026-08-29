@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+@theme {
+    --color-app-bg: #f5f7fa;
+    --color-card-bg: #ffffff;
+    --color-text-main: #172033;
+    --color-ui-border: #d9dee8;
+    --color-brand-primary: #002147;
+    --color-brand-accent: #d4af37;
+}
