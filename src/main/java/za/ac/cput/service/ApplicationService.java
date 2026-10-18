@@ -51,6 +51,12 @@ public class ApplicationService {
         return repository.findById(applicationId);
     }
 
+    public boolean isStudentOwner(String studentNumber, String email) {
+        return studentRepository.findById(studentNumber)
+                .map(student -> student.getEmail().equalsIgnoreCase(email))
+                .orElse(false);
+    }
+
     public List<Application> readAll() {
         return repository.findAll();
     }

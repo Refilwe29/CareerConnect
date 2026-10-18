@@ -1,13 +1,7 @@
 package za.ac.cput.controller;
 
-/*
-InternshipController.java
-Internship REST Controller
-Author: Refilwe Mabena (231013051)
-Date: 8 August 2026
-*/
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import za.ac.cput.domain.Internship;
 import za.ac.cput.service.IInternshipService;
@@ -27,6 +21,7 @@ public class InternshipController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasAnyRole('COMPANY', 'ADMIN')")
     public Internship create(@RequestBody Internship internship) {
         return internshipService.create(internship);
     }
@@ -37,11 +32,13 @@ public class InternshipController {
     }
 
     @PutMapping("/update")
+    @PreAuthorize("hasAnyRole('COMPANY', 'ADMIN')")
     public Internship update(@RequestBody Internship internship) {
         return internshipService.update(internship);
     }
 
     @DeleteMapping("/delete/{internshipId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public boolean delete(@PathVariable String internshipId) {
         return internshipService.delete(internshipId);
     }
@@ -52,14 +49,12 @@ public class InternshipController {
     }
 
     @GetMapping("/getByLocation")
-    public List<Internship> getByLocation(
-            @RequestParam String location) {
+    public List<Internship> getByLocation(@RequestParam String location) {
         return internshipService.getInternshipsByLocation(location);
     }
 
     @GetMapping("/getByTitle")
-    public List<Internship> getByTitle(
-            @RequestParam String title) {
+    public List<Internship> getByTitle(@RequestParam String title) {
         return internshipService.getInternshipsByTitle(title);
     }
 }
