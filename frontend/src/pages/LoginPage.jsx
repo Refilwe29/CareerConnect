@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { getStudentByEmail } from '../services/studentService';
 import {useAuth} from "../context/AuthContext.jsx";
+import apiClient from "../services/apiClient.js";
 
 export default function LoginPage() {
     const navigate = useNavigate();
@@ -34,27 +35,27 @@ export default function LoginPage() {
         setLoading(true);
 
         try {
-            let searchEmail = credentials.email.trim();
-            if (!searchEmail.includes('@')) {
-                searchEmail = `${searchEmail}@mycput.ac.za`;
-            }
+            const response = await apiClient.post('/auth/login', {
+                identifier: credentials.email,
+                password: credentials.password
+            });
 
-            const student = await getStudentByEmail(searchEmail);
+            const authData = response.data;
 
-            if (student && student.password === credentials.password) {
-                const userSession = {
-                    name: student.name,
-                    studentNumber: student.studentNumber,
-                    email: student.email,
-                    role: 'STUDENT'
-                };
-                login(userSession);
+            if (authData && authData.token) {
+                login({
+                    name: authData.name,
+                    studentNumber: authData.studentNumber,
+                    email: authData.email,
+                    role: authData.role,
+                    token: authData.token
+                });
+
                 navigate(from, { replace: true });
-            } else {
-                setError('Invalid credentials. Please check your Student Number/Email and Password.');
             }
         } catch (err) {
-            setError('Could not verify credentials. Ensure Spring Boot backend is running.');
+            const errorMsg = err.response?.data || 'Invalid credentials. Please verify your details.';
+            setError(typeof errorMsg === 'string' ? errorMsg : 'Authentication failed.');
         } finally {
             setLoading(false);
         }
