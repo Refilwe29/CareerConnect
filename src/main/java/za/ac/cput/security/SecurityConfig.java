@@ -23,7 +23,7 @@ import java.util.List;
  * SecurityConfig.java
  * Spring Security & CORS Configuration
  * Author: Ebenezer Kouakou (230480152)
- * Date: 18 October 2026
+ * Date: 19 October 2026
  */
 @Configuration
 @EnableWebSecurity
@@ -59,20 +59,28 @@ public class SecurityConfig {
 
                         // Public Endpoints
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/student/create").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/student/create").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/company/create").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/internship/getAll").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/internship/read/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/company/getAll").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/company/read/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/company/getByName").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/company/getByIndustry").permitAll()
 
                         // Admin Endpoints
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
 
                         // Employer Endpoints
                         .requestMatchers(HttpMethod.POST, "/api/internship/create").hasAnyRole("COMPANY", "ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/internship/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/internship/**").hasAnyRole("COMPANY", "ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/internship/**").hasRole("ADMIN")
 
-                        .requestMatchers("/api/student/**", "/api/application/**", "/api/profile/**")
-                        .hasAnyRole("STUDENT", "ADMIN")
+                        // Role-Based Groupings
+                        .requestMatchers("/api/student/**").hasAnyRole("STUDENT", "ADMIN")
+                        .requestMatchers("/api/application/**").hasAnyRole("STUDENT", "COMPANY", "ADMIN")
+                        .requestMatchers("/api/profile/**").hasAnyRole("STUDENT", "COMPANY", "ADMIN")
+                        .requestMatchers("/api/company/**").hasAnyRole("COMPANY", "ADMIN")
                         .requestMatchers("/api/internship/**").hasAnyRole("STUDENT", "COMPANY", "ADMIN")
 
                         .anyRequest().denyAll()

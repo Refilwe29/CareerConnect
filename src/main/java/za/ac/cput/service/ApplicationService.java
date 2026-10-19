@@ -69,6 +69,10 @@ public class ApplicationService {
         return repository.findByInternship_InternshipId(internshipId);
     }
 
+    public List<Application> readByCompany(String companyId) {
+        return repository.findByInternship_CompanyId(companyId);
+    }
+
     public List<Application> readByStatus(String status) {
         return repository.findByStatus(status);
     }

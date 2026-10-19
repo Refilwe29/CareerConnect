@@ -8,7 +8,7 @@ package za.ac.cput.dto.response;
  */
 public record AuthResponse(
         String token,
-        String studentNumber,
+        String id,
         String name,
         String email,
         String role
