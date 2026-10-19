@@ -10,7 +10,7 @@ import java.util.Optional;
 /*
  * CompanyRepository.java
  * CompanyRepository interface
- * Author: Ebenezer Kouakou (230480152)
+ * Author: Sylvia Mahlangu (222954396)
  * Date: 18 October 2026
  */
 @Repository

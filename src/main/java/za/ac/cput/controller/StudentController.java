@@ -12,6 +12,7 @@ import za.ac.cput.dto.response.StudentResponse;
 import za.ac.cput.service.IStudentService;
 
 import java.util.List;
+import java.util.Objects;
 
 /*
  * StudentController.java
@@ -21,6 +22,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/student")
+@CrossOrigin(origins = "http://localhost:5173")
 public class StudentController {
 
     private final IStudentService studentService;
@@ -30,7 +32,6 @@ public class StudentController {
     }
 
     @PostMapping("/create")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> create(@RequestBody StudentRegistrationRequest request) {
         try {
             StudentResponse response = studentService.create(request);
@@ -72,7 +73,7 @@ public class StudentController {
     }
 
     @DeleteMapping("/delete/{studentNumber}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('STUDENT', 'ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable String studentNumber) {
         boolean deleted = studentService.delete(studentNumber);
         if (!deleted) {
@@ -90,7 +91,7 @@ public class StudentController {
     @GetMapping("/getByEmail")
     @PreAuthorize("hasAnyRole('STUDENT', 'ADMIN')")
     public ResponseEntity<StudentResponse> getByEmail(@RequestParam String email,
-                                                       Authentication authentication) {
+                                                      Authentication authentication) {
         if (!isAdmin(authentication) && !email.equalsIgnoreCase(authentication.getName())) {
             throw new AccessDeniedException("Students may only read their own profile.");
         }
@@ -117,6 +118,6 @@ public class StudentController {
 
     private boolean isAdmin(Authentication authentication) {
         return authentication.getAuthorities().stream()
-                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
+                .anyMatch(authority -> Objects.equals(authority.getAuthority(), "ROLE_ADMIN"));
     }
 }
