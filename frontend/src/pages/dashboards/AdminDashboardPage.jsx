@@ -52,40 +52,49 @@ export default function AdminDashboardPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-card-bg border border-ui-border p-6 rounded-2xl shadow-sm flex items-center space-x-4">
-                    <div className="p-3.5 bg-brand-primary/10 text-brand-accent border border-brand-accent/20 rounded-xl">
-                        <Users className="w-6 h-6" />
-                    </div>
+                {/* Students */}
+                <div className="bg-card-bg border border-ui-border p-6 rounded-3xl shadow-sm flex flex-col justify-between hover:border-brand-accent/40 transition-all">
                     <div>
-                        <p className="text-text-muted text-xs font-semibold uppercase tracking-wider">Registered Students</p>
-                        <h3 className="font-heading text-2xl font-bold text-text-main mt-0.5">
-                            {loading ? <Loader2 className="w-5 h-5 animate-spin inline text-brand-accent" /> : `${studentCount} Students`}
-                        </h3>
+                        <div className="w-10 h-10 bg-brand-primary/10 text-brand-accent border border-brand-accent/20 rounded-xl flex items-center justify-center mb-3">
+                            <Users className="w-5 h-5" />
+                        </div>
+                        <h3 className="font-heading text-base font-bold text-text-main mb-1">Student Directory</h3>
+                        <p className="text-text-muted text-xs leading-relaxed">Search, inspect, and manage student accounts.</p>
                     </div>
+                    <Link to="/admin/students" className="mt-4 inline-flex items-center space-x-1.5 text-xs font-semibold text-brand-accent hover:underline">
+                        <span>Manage Students</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                    </Link>
                 </div>
 
-                <div className="bg-card-bg border border-ui-border p-6 rounded-2xl shadow-sm flex items-center space-x-4">
-                    <div className="p-3.5 bg-amber-50 text-amber-600 border border-amber-200 rounded-xl">
-                        <Building2 className="w-6 h-6" />
-                    </div>
+                {/* Companies */}
+                <div className="bg-card-bg border border-ui-border p-6 rounded-3xl shadow-sm flex flex-col justify-between hover:border-amber-400/40 transition-all">
                     <div>
-                        <p className="text-text-muted text-xs font-semibold uppercase tracking-wider">Registered Companies</p>
-                        <h3 className="font-heading text-2xl font-bold text-text-main mt-0.5">
-                            {loading ? <Loader2 className="w-5 h-5 animate-spin inline text-amber-600" /> : `${companyCount} Partners`}
-                        </h3>
+                        <div className="w-10 h-10 bg-amber-50 text-amber-600 border border-amber-200 rounded-xl flex items-center justify-center mb-3">
+                            <Building2 className="w-5 h-5" />
+                        </div>
+                        <h3 className="font-heading text-base font-bold text-text-main mb-1">Company Management</h3>
+                        <p className="text-text-muted text-xs leading-relaxed">Audit corporate partners and inspect listings.</p>
                     </div>
+                    <Link to="/admin/companies" className="mt-4 inline-flex items-center space-x-1.5 text-xs font-semibold text-amber-600 hover:underline">
+                        <span>Manage Employers</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                    </Link>
                 </div>
 
-                <div className="bg-card-bg border border-ui-border p-6 rounded-2xl shadow-sm flex items-center space-x-4">
-                    <div className="p-3.5 bg-emerald-50 text-brand-mint border border-emerald-200 rounded-xl">
-                        <Briefcase className="w-6 h-6" />
-                    </div>
+                {/* Internships */}
+                <div className="bg-card-bg border border-ui-border p-6 rounded-3xl shadow-sm flex flex-col justify-between hover:border-brand-mint/40 transition-all">
                     <div>
-                        <p className="text-text-muted text-xs font-semibold uppercase tracking-wider">Global Internships</p>
-                        <h3 className="font-heading text-2xl font-bold text-text-main mt-0.5">
-                            {loading ? <Loader2 className="w-5 h-5 animate-spin inline text-brand-mint" /> : `${internshipCount} Active`}
-                        </h3>
+                        <div className="w-10 h-10 bg-emerald-50 text-brand-mint border border-emerald-200 rounded-xl flex items-center justify-center mb-3">
+                            <Briefcase className="w-5 h-5" />
+                        </div>
+                        <h3 className="font-heading text-base font-bold text-text-main mb-1">Opportunity Oversight</h3>
+                        <p className="text-text-muted text-xs leading-relaxed">Moderate, audit, or prune active & expired postings.</p>
                     </div>
+                    <Link to="/admin/internships" className="mt-4 inline-flex items-center space-x-1.5 text-xs font-semibold text-brand-mint hover:underline">
+                        <span>Manage Postings</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                    </Link>
                 </div>
             </div>
 
@@ -111,7 +120,7 @@ export default function AdminDashboardPage() {
                         <h3 className="font-heading text-xl font-bold text-text-main mb-2">Company Management</h3>
                         <p className="text-text-muted text-xs leading-relaxed">Approve new employer registrations and review posted internship listings.</p>
                     </div>
-                    <Link to="/companies" className="mt-6 inline-flex items-center space-x-2 text-xs font-semibold text-amber-600 hover:underline">
+                    <Link to="/admin/companies" className="mt-6 inline-flex items-center space-x-2 text-xs font-semibold text-amber-600 hover:underline">
                         <span>Manage Employers</span>
                         <ArrowRight className="w-4 h-4" />
                     </Link>
