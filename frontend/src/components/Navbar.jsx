@@ -76,8 +76,8 @@ export default function Navbar() {
             return [
                 { to: '/', label: 'Dashboard', icon: LayoutDashboard, end: true },
                 { to: '/admin/students', label: 'Students', icon: Users },
-                { to: '/companies', label: 'Companies', icon: Building2 },
-                { to: '/internships', label: 'Internships', icon: Briefcase },
+                { to: '/admin/companies', label: 'Companies', icon: Building2 },
+                { to: '/admin/internships', label: 'Internships', icon: Briefcase },
             ];
         }
 
