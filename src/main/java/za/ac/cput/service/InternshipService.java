@@ -1,3 +1,4 @@
+
 package za.ac.cput.service;
 
 /*
@@ -6,7 +7,6 @@ Internship Service
 Author: Refilwe Mabena (231013051)
 Date: 27 October 2026
 */
-
 
 import org.springframework.stereotype.Service;
 import za.ac.cput.domain.Internship;
@@ -31,29 +31,33 @@ public class InternshipService implements IInternshipService {
 
     @Override
     public InternshipResponse create(InternshipRequest request) {
-        if (request == null) {
+        return create(request, null);
+    }
+
+    public InternshipResponse create(
+            InternshipRequest request, String companyId) {
+
+        if (request == null || request.getDeadline() == null
+                || !request.getDeadline().isAfter(LocalDateTime.now())) {
             return null;
         }
 
         String id = UUID.randomUUID().toString();
+
+        if (internshipRepository.existsById(id)) {
+            return null;
+        }
 
         Internship internship = InternshipFactory.createInternship(
                 id,
                 request.getTitle(),
                 request.getDescription(),
                 request.getLocation(),
+                companyId,
                 request.getDeadline()
         );
 
         if (internship == null) {
-            return null;
-        }
-
-        if (!internship.getDeadline().isAfter(LocalDateTime.now())) {
-            return null;
-        }
-
-        if (internshipRepository.existsById(id)) {
             return null;
         }
 
@@ -68,25 +72,37 @@ public class InternshipService implements IInternshipService {
     }
 
     @Override
-    public InternshipResponse update(String id, InternshipRequest request) {
-        if (request == null || !internshipRepository.existsById(id)) {
+    public InternshipResponse update(
+            String id, InternshipRequest request) {
+
+        if (request == null || request.getDeadline() == null) {
             return null;
         }
 
-        Internship internship = InternshipFactory.createInternship(
-                id,
-                request.getTitle(),
-                request.getDescription(),
-                request.getLocation(),
-                request.getDeadline()
-        );
+        Internship existing = internshipRepository.findById(id)
+                .orElse(null);
 
-        if (internship == null
-                || !internship.getDeadline().isAfter(LocalDateTime.now())) {
+        if (existing == null
+                || !request.getDeadline().isAfter(LocalDateTime.now())) {
             return null;
         }
 
-        return toResponse(internshipRepository.save(internship));
+        Internship updatedInternship =
+                InternshipFactory.createInternship(
+                        id,
+                        request.getTitle(),
+                        request.getDescription(),
+                        request.getLocation(),
+                        existing.getCompanyId(),
+                        request.getDeadline()
+                );
+
+        if (updatedInternship == null) {
+            return null;
+        }
+
+        return toResponse(
+                internshipRepository.save(updatedInternship));
     }
 
     @Override
@@ -108,7 +124,8 @@ public class InternshipService implements IInternshipService {
     }
 
     @Override
-    public List<InternshipResponse> getInternshipsByLocation(String location) {
+    public List<InternshipResponse> getInternshipsByLocation(
+            String location) {
         return internshipRepository.findByLocation(location)
                 .stream()
                 .map(this::toResponse)
@@ -117,7 +134,8 @@ public class InternshipService implements IInternshipService {
 
     @Override
     public List<InternshipResponse> getInternshipsByTitle(String title) {
-        return internshipRepository.findByTitleContainingIgnoreCase(title)
+        return internshipRepository
+                .findByTitleContainingIgnoreCase(title)
                 .stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
