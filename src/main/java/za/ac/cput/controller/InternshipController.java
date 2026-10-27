@@ -4,14 +4,16 @@ package za.ac.cput.controller;
 InternshipController.java
 Internship REST Controller
 Author: Refilwe Mabena (231013051)
-Date: 8 August 2026
+Date: 27 October 2026
 */
 
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.web.bind.annotation.*;
-import za.ac.cput.domain.Internship;
+import za.ac.cput.dto.request.InternshipRequest;
+import za.ac.cput.dto.response.InternshipResponse;
 import za.ac.cput.service.IInternshipService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -21,24 +23,27 @@ public class InternshipController {
 
     private final IInternshipService internshipService;
 
-    @Autowired
     public InternshipController(IInternshipService internshipService) {
         this.internshipService = internshipService;
     }
 
     @PostMapping("/create")
-    public Internship create(@RequestBody Internship internship) {
-        return internshipService.create(internship);
+    public InternshipResponse create(
+            @RequestBody InternshipRequest request) {
+        return internshipService.create(request);
     }
 
     @GetMapping("/read/{internshipId}")
-    public Internship read(@PathVariable String internshipId) {
+    public InternshipResponse read(
+            @PathVariable String internshipId) {
         return internshipService.read(internshipId);
     }
 
-    @PutMapping("/update")
-    public Internship update(@RequestBody Internship internship) {
-        return internshipService.update(internship);
+    @PutMapping("/update/{internshipId}")
+    public InternshipResponse update(
+            @PathVariable String internshipId,
+            @RequestBody InternshipRequest request) {
+        return internshipService.update(internshipId, request);
     }
 
     @DeleteMapping("/delete/{internshipId}")
@@ -47,19 +52,25 @@ public class InternshipController {
     }
 
     @GetMapping("/getAll")
-    public List<Internship> getAll() {
+    public List<InternshipResponse> getAll() {
         return internshipService.getAll();
     }
 
     @GetMapping("/getByLocation")
-    public List<Internship> getByLocation(
+    public List<InternshipResponse> getByLocation(
             @RequestParam String location) {
         return internshipService.getInternshipsByLocation(location);
     }
 
     @GetMapping("/getByTitle")
-    public List<Internship> getByTitle(
+    public List<InternshipResponse> getByTitle(
             @RequestParam String title) {
         return internshipService.getInternshipsByTitle(title);
+    }
+
+    @GetMapping("/getUpcoming")
+    public List<InternshipResponse> getUpcoming() {
+        return internshipService.getUpcomingInternships(
+                LocalDateTime.now());
     }
 }
